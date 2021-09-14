@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Header from '../../components/Header';
 
 import Modal from '../../components/Modal';
 
-import randomUser from '../../data/randomUser.json';
+import api from '../../services/api';
 
 import Pagination from '../../components/Pagination';
 
@@ -13,8 +13,8 @@ import './styles.css'
 function List() {
     const [showModal, setShowModal] = useState(false);
     const [name, setName] = useState('');
-    const [loading, setLoading] = useState(false);
-    const userInfo = randomUser.results;
+    const [loading,] = useState(false);
+    const [userInfo, setUserInfo] = useState([])
 
     const [searchField, setSearchField] = useState(userInfo);
 
@@ -38,7 +38,14 @@ function List() {
         }
 
         setName(info);
-    }
+    };
+
+    useEffect(() => {
+        api.get('').then(({ data }) => {
+            setUserInfo(data.results);
+        })
+    }, []);
+
     return (
         <div>
             <Header />
@@ -92,9 +99,9 @@ function List() {
                                 {searchField && searchField.length > 0 ?
                                     (
                                         <>
-                                            {userInfo.map((item, k) => {
+                                            {userInfo.map((item) => {
                                                 return (
-                                                    <ul className="flex list-row" key={k}>
+                                                    <ul className="flex list-row" key={item.id}>
                                                         <li
                                                             className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
                                                         >
