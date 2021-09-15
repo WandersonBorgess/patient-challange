@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import api from '../services/api';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllUsers } from '../store/fetchActions';
 
-import './Modal.css'
+import './Modal.css';
 
 function Modal({ modalShow }) {
-    const [userInfo, setUserInfo] = useState([])
     const date = new Date()
     const formatDate = () => {
         const dateFormat = ((date.getDate())) + "/" + ((date.getMonth() + 1)) + "/" + date.getFullYear();
 
         return dateFormat;
     }
+    const userInfo = useSelector(state => state.users);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        api.get('').then(({ data }) => {
-            setUserInfo(data.results);
-        })
-    }, []);
-
+        dispatch(getAllUsers());
+    }, [dispatch])
+    
     return (
         <div className="absolute top-0 left-0 right-0" style={{ backgroundColor: 'rgba(109, 124, 136, 0.9)', zIndex: 5 }}>
             <div className="flex align-center justify-center h-screen modal">
                 <div className="w-1/3 mt-16 mb-16 bg-white rounded overflow-y-auto card">
 
-                    {userInfo.map((item) => {
+                    {userInfo?.map((item) => {
                         return (
-                            <div key={item.id}>
+                            <div key={item.id.value}>
                                 <div className="flex justify-center relative">
                                     <div className="bg-gray-200 w-20 h-20 rounded-full mt-4">
-                                        <img src={item.picture.thumbnail} alt="Foto" height={80} width={80} className="rounded-full" />
+                                        <img src={item.picture.thumbnail} alt="" height={80} width={80} className="rounded-full" />
                                     </div>
                                     <i onClick={modalShow} className="fas fa-times absolute right-1 top-1 cursor-pointer p-2 text-gray-600" width="30px" height="30px" />
                                 </div>

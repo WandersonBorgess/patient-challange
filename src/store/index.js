@@ -1,7 +1,9 @@
-import { combineReducers, createStore, applyMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
-import { save } from './users';
+import reducer from './user/reducer';
 
-const store = createStore(() => combineReducers(save), {}, applyMiddleware())
-
-export default store;
+export default configureStore({
+    reducer: {
+        users: reducer,
+    }
+})

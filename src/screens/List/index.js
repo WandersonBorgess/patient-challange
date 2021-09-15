@@ -4,18 +4,21 @@ import Header from '../../components/Header';
 
 import Modal from '../../components/Modal';
 
-import api from '../../services/api';
-
 import Pagination from '../../components/Pagination';
 
-import './styles.css'
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllUsers } from '../../store/fetchActions';
+
+import './styles.css';
 
 function List() {
     const [showModal, setShowModal] = useState(false);
     const [name, setName] = useState('');
     const [loading,] = useState(false);
-    const [userInfo, setUserInfo] = useState([])
 
+    const userInfo = useSelector(state => state.users);
+    const dispatch = useDispatch();
+    
     const [searchField, setSearchField] = useState(userInfo);
 
     const date = new Date()
@@ -24,6 +27,10 @@ function List() {
 
         return dateFormat;
     }
+
+    useEffect(() => {
+        dispatch(getAllUsers());
+    }, [dispatch])
 
     const filtered = e => {
         const info = e.target.value;
@@ -40,11 +47,6 @@ function List() {
         setName(info);
     };
 
-    useEffect(() => {
-        api.get('').then(({ data }) => {
-            setUserInfo(data.results);
-        })
-    }, []);
 
     return (
         <div>
@@ -96,12 +98,12 @@ function List() {
                                     </li>
                                 </ul>
 
-                                {searchField && searchField.length > 0 ?
+                                {searchField && searchField.length > -1 ?
                                     (
                                         <>
-                                            {userInfo.map((item) => {
+                                            {userInfo?.map((item, i) => {
                                                 return (
-                                                    <ul className="flex list-row" key={item.id}>
+                                                    <ul className="flex list-row" key={i}>
                                                         <li
                                                             className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
                                                         >
