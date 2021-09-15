@@ -30,16 +30,4 @@
         border: 0;
         border-bottom: 2px solid #4B5563;
     }
-
-   .list-row, li:nth-child(4) {
-        border-bottom: 0;
-    }
-
-    .MuiPagination-ul {
-        flex-wrap: unset!important;
-    }
-
-    .MuiPagination-ul li  {
-        border-bottom: 0;
-    }
 }

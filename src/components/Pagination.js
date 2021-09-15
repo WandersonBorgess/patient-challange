@@ -1,23 +1,53 @@
-import React, { useEffect } from 'react';
-import Pagination from '@material-ui/lab/Pagination';
+import React from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { getPagination } from '../store/fetchActions';
+import './Pagination.css'
 
-function PaginationList() {
+const MAX_ITEMS = 9;
+const MAX_LEFT = (MAX_ITEMS - 1) / 2;
 
-    const pagination = useSelector(state => state.users);
-    const dispatch = useDispatch();
+const Pagination = ({ limit, total, offset, setOffset }) => {
+  const current = offset ? (offset / limit) + 1 : 1;
+  const pages = Math.ceil(total / limit);
+  const first = Math.max(current - MAX_LEFT, 1);
 
-    useEffect(() => {
-        dispatch(getPagination());
-    }, [dispatch])
+  function onPageChange(page) {
+    setOffset((page - 1) * limit);
+  }
 
-    return (
-        <div className="flex justify-center align-center w-full p-8">
-          {pagination?.map((page, i) =>   <Pagination key={i} count={page.page} variant="outlined" shape="rounded" />)}
-        </div>
-    )
+  return (
+    <ul className="w-full flex justify-center p-8 pagination">
+      <li>
+        <button
+          className="btn"
+          onClick={() => onPageChange(current - 1)}
+          disabled={current === 1}
+        >
+          Previous
+        </button>
+      </li>
+      {Array.from({ length: MAX_ITEMS })
+        .map((_, index) => index + first)
+        .map((page) => (
+          <li key={page}>
+            <button
+              onClick={() => setOffset((page - 1) * limit)}
+              className={page === current ? 'pagination__item--active' : null}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+      <li>
+        <button
+          className="btn"
+          onClick={() => onPageChange(current + 1)}
+          disabled={current === pages}
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+  )
 }
 
-export default PaginationList
+export default Pagination;
