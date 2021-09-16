@@ -7,20 +7,28 @@ import SearchInput from '../../components/SearchInput';
 
 import Pagination from '../../components/Pagination';
 
+import { getAllUsers } from '../../store/fetchActions';
+import { useDispatch, useSelector } from 'react-redux';
+
 import './styles.css';
 
-import api from '../../services/api';
+//import api from '../../services/api';
 
 const LIMIT = 12;
 
 function List() {
   const [isFetching, setFetching] = useState(false)
   const [openUserId, setOpenUser] = useState();
+  const response = useSelector((state) => state.users);
 
   const [text, setText] = useState('');
   const [offset, setOffset] = useState(0);
   const [patients, setPatients] = useState([])
+  
+  const dispatch = useDispatch();
 
+  /*
+  
   async function fetchAPI(query) {
     setFetching(true)
     const response = await api.get('', { params: query })
@@ -35,11 +43,28 @@ function List() {
     const query = { nat: 'br', inc: 'id,name,gender,dob', results: LIMIT, offset }
     fetchAPI(query)
   }, [offset])
+  */
+
+  async function fetchAPI() {
+    setFetching(true)
+    await dispatch(getAllUsers())
+    setFetching(false);
+
+    if(response.data && response.data.results) {
+      setPatients(response.data.results)
+    }
+  }
+
+  useEffect(() => {
+    const query = { nat: 'br', inc: 'id,name,gender,dob', results: LIMIT, offset }
+    fetchAPI(query)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset])
 
 
 
   return (
-    <div>
+    <>
       <Header />
       <div className="flex justify-center align-center">
         <div className="justify-center align-center w-3/6 p-16 data-container">
@@ -93,7 +118,7 @@ function List() {
                 :
                 <>
                   {
-                    patients
+                    response
                       .filter(item => !text || `${item.name.first} ${item.name.last}`
                         .includes(text)).map((item, i) => {
                           return (
@@ -102,8 +127,8 @@ function List() {
                                 className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
                               >
                                 <div>
-                                  <strong className="text-gray-600">{item.name.first}</strong>
-                                  <strong className="text-gray-600 pl-2">{item.name.last}</strong>
+                                  <strong className="text-gray-600">{item.name?.first}</strong>
+                                  <strong className="text-gray-600 pl-2">{item.name?.last}</strong>
                                 </div>
                               </li>
                               <li
@@ -114,7 +139,7 @@ function List() {
                               <li
                                 className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
                               >
-                                <p className="text-gray-600">{(new Date(item.dob.date)).toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                                <p className="text-gray-600">{(new Date(item.dob?.date)).toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
                               </li>
                               <li
                                 className="border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
@@ -138,9 +163,6 @@ function List() {
         </div>
       </div>
 
-      <Modal closeModal={() => setOpenUser(undefined)} userId={openUserId} />
-
-
       {
         patients && (
           <Pagination
@@ -151,7 +173,8 @@ function List() {
           />
         )
       }
-    </div>
+        <Modal closeModal={() => setOpenUser(undefined)} userId={openUserId} />
+    </>
   )
 }
 

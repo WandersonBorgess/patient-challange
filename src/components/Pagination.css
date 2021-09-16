@@ -38,3 +38,13 @@
     background-color: #4B5563;
     transition: ease-in 200ms;
 }
+
+@media (max-width: 576px) {
+    .pagination li {
+        border: none
+    }
+    
+    .pagination {
+        width: 100%;
+    }
+}

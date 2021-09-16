@@ -1,3 +1,12 @@
+.modal-bg {
+    background-color: rgba(109, 124, 136, 0.9); 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 @media (max-width: 1440px) {
     .app .card {
         width: 45%;
@@ -18,9 +27,10 @@
 
 @media (max-width: 576px) {
     .app .card {
-        width: 90%;
+        width: 100%;
     }
+
     .app .modal {
-        height: 100%!important;
+        padding: 48px 8px 0 8px;
     }
 }

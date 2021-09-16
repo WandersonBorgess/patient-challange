@@ -2,34 +2,67 @@ import React, { useState, useEffect } from 'react';
 
 import './Modal.css';
 
-import api from '../services/api';
+//import api from '../services/api';
 
-function Modal({  closeModal, userId }) {
+import { getUser } from '../store/fetchActions';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+function Modal({ closeModal, userId }) {
   const [user, setUser] = useState()
   const [isFetching, setFetching] = useState(false)
-  
-  async function fetchAPI(userId) {
-    setFetching(true)
-    const response = await api.get(`/?results=1&page=1&id=${userId}`)
-    setFetching(false)
-    setUser(response.data.results[0])
-  }
 
-  function handleClose () {
+  const response = useSelector((state) => state.users)
+
+  const dispatch = useDispatch();
+
+  /*
+    async function fetchAPI(userId) {
+      setFetching(true)
+      const response = await api.get(`/?results=1&page=1&id=${userId}`)
+      setFetching(false)
+      setUser(response.data.results[0])
+    }
+  */
+
+  function handleClose() {
     setUser(undefined)
     closeModal()
+  }
+  /*
+  
+    useEffect(() => {
+      if (userId) {
+        fetchAPI(userId)
+      }
+    }, [userId])
+  */
+
+
+  async function fetchAPI(userId) {
+    setFetching(true)
+    await dispatch(getUser(userId));
+    setFetching(false)
+    if (response.data && response.results) {
+      setUser(response.data.results[0])
+    }
   }
 
   useEffect(() => {
     if (userId) {
       fetchAPI(userId)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
+
 
   if (isFetching) {
     return (
-      <div className="absolute h-full w-full top-0" style={{ backgroundColor: 'rgba(109, 124, 136, 0.9)' }}>
-        <div className="flex justify-center h-screen modal p-16">
+      <div className="absolute w-full top-0"
+        style={{
+          backgroundColor: 'rgba(109, 124, 136, 0.9)', position: 'fixed', top: 0, bottom: 0
+        }}>
+        <div className="flex justify-center modal p-16">
           <div className="w-1/3 mb-16, h-full bg-white rounded card">
             <h2>Loading more</h2>
             <p>wait...</p>
@@ -42,8 +75,8 @@ function Modal({  closeModal, userId }) {
   if (!user) return null
 
   return (
-    <div className="absolute h-full w-full top-0" style={{ backgroundColor: 'rgba(109, 124, 136, 0.9)' }}>
-      <div className="flex justify-center h-screen modal p-16">
+    <div className="modal-bg">
+      <div className="flex justify-center modal p-16 h-full">
         <div className="w-1/3 mb-16, h-full bg-white rounded card">
           <div>
             <div className="flex justify-center relative">
@@ -90,7 +123,6 @@ function Modal({  closeModal, userId }) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )

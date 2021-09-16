@@ -19,6 +19,7 @@
 @media (max-width: 576px) {
     .data-container {
         flex-direction: column;
+        padding: 16px;
     }
 
     .list-header, .list-row {
@@ -29,5 +30,9 @@
         width: 100%!important;
         border: 0;
         border-bottom: 2px solid #4B5563;
+    }
+
+    .list-row, .list-header li:nth-child(4) {
+        border-bottom: none;
     }
 }

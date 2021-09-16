@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Pagination.css'
 
-const MAX_ITEMS = 9;
+const MAX_ITEMS = 5;
 const MAX_LEFT = (MAX_ITEMS - 1) / 2;
 
 const Pagination = ({ limit, total, offset, setOffset }) => {
@@ -15,7 +15,7 @@ const Pagination = ({ limit, total, offset, setOffset }) => {
   }
 
   return (
-    <ul className="w-full flex justify-center p-8 pagination">
+    <ul className="flex justify-center p-8 pagination">
       <li>
         <button
           className="btn"
