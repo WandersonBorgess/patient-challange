@@ -5,56 +5,39 @@ import Modal from '../../components/Modal';
 
 import SearchInput from '../../components/SearchInput';
 
-import { useSelector } from 'react-redux';
-
 import Pagination from '../../components/Pagination';
 
 import './styles.css';
 
-const api = 'https://randomuser.me/api/';
+import api from '../../services/api';
 
 const LIMIT = 12;
 
 function List() {
-  const [showModal, setShowModal] = useState(false);
+  const [isFetching, setFetching] = useState(false)
+  const [openUserId, setOpenUser] = useState();
+
   const [text, setText] = useState('');
   const [offset, setOffset] = useState(0);
+  const [patients, setPatients] = useState([])
 
-  const userInfo = useSelector(state => state.users);
-  const [info, setInfo] = useState(userInfo);
+  async function fetchAPI(query) {
+    setFetching(true)
+    const response = await api.get('', { params: query })
+    setFetching(false)
 
-  const date = new Date()
-  const formatDate = () => {
-    const dateFormat = ((date.getDate())) + "/" + ((date.getMonth() + 1)) + "/" + date.getFullYear();
-
-    return dateFormat;
+    if (response.data && response.data.results) {
+      setPatients(response.data.results)
+    }
   }
 
   useEffect(() => {
-    const query = {
-      page: {
-        limit: LIMIT,
-        offset
-      }
-    };
+    const query = { nat: 'br', inc: 'id,name,gender,dob', results: LIMIT, offset }
+    fetchAPI(query)
+  }, [offset])
 
-    if (text) {
-      query.filter = {
-        text
-      }
-    }
-    fetch(`${api}/?results=${8}`)
-      .then((response) => response.json())
-      .then((response) => {
-        setInfo(response);
-      })
-  }, [text, offset])
-  const userDetailSimple = info.results?.map((u) => u)
-  const userDetail = userDetailSimple?.find(u => u.id)
-  console.log(userDetail)
-  if(!userDetail) return null
-  //const userDetail = info.results?.find(data => data.id)
- 
+
+
   return (
     <div>
       <Header />
@@ -99,70 +82,75 @@ function List() {
             </ul>
 
 
-            {text && !info.data ? (
-              <div className="flex align-center justify-center p-8">
-                <div className="loading"></div>
-                <strong className="text-gray-600 pl-2">Loading more...</strong>
-              </div>
-            )
-              :
-              <>
-                {info.results?.map((item) => {
-                  return (
-                    <ul className="flex list-row" key={item.id}>
-                      <li
-                        className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                      >
-                        <p className="text-gray-600">{item.name.first}{item.name.last}</p>
-                      </li>
-                      <li
-                        className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                      >
-                        <p className="text-gray-600">{item.gender}</p>
-                      </li>
-                      <li
-                        className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                      >
-                        <p className="text-gray-600">{formatDate(item.dob.date)}</p>
-                      </li>
-                      <li
-                        className="border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                      >
-                        
-                        <span
-                          className="bg-gray-600 cursor-pointer text-center rounded p-2 w-1/2"
-                          onClick={() => setShowModal(true)}
-                        >
-                          <strong className="text-white">View</strong>
-                        </span>
-                    
-                      </li>
+            {
+              isFetching
+                ? (
+                  <div className="flex align-center justify-center p-8">
+                    <div className="loading"></div>
+                    <strong className="text-gray-600 pl-2">Loading more...</strong>
+                  </div>
+                )
+                :
+                <>
+                  {
+                    patients
+                      .filter(item => !text || `${item.name.first} ${item.name.last}`
+                        .includes(text)).map((item, i) => {
+                          return (
+                            <ul className="flex list-row" key={i}>
+                              <li
+                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
+                              >
+                                <div>
+                                  <strong className="text-gray-600">{item.name.first}</strong>
+                                  <strong className="text-gray-600 pl-2">{item.name.last}</strong>
+                                </div>
+                              </li>
+                              <li
+                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
+                              >
+                                <p className="text-gray-600">{item.gender === 'male' ? 'Male' : 'Female'}</p>
+                              </li>
+                              <li
+                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
+                              >
+                                <p className="text-gray-600">{(new Date(item.dob.date)).toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                              </li>
+                              <li
+                                className="border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
+                              >
+                                <span
+                                  className="bg-gray-600 cursor-pointer text-center rounded p-2 w-1/2"
+                                  onClick={() => setOpenUser(item.id)}
+                                >
+                                  <strong className="text-white">View</strong>
+                                </span>
 
-                    </ul>
+                              </li>
 
-                  )
-                })}
-              </>
+                            </ul>
+                          )
+                        })
+                  }
+                </>
             }
-
-
           </div>
-
-
         </div>
       </div>
 
-      {showModal && <Modal show={() => setShowModal(false)} user={userDetail} />}
+      <Modal closeModal={() => setOpenUser(undefined)} userId={openUserId} />
 
 
-      {info?.results && (
-        <Pagination
-          limit={LIMIT}
-          total={info}
-          offset={offset}
-          setOffset={setOffset}
-        />
-      )}
+      {
+        patients && (
+          <Pagination
+            limit={LIMIT}
+            total={patients.length}
+            offset={offset}
+            setOffset={setOffset}
+          />
+        )
+      }
     </div>
   )
 }

@@ -6,7 +6,7 @@ import Routes from './Routes';
 
 function App() {
   return (
-      <div className="h-screen bg-gray-50 app">
+      <div className="bg-gray-50 app">
         <Routes />
       </div>
   )

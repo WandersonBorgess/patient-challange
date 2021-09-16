@@ -1,16 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { getAllUsers } from '../store/fetchActions'
-
+import { useSelector } from 'react-redux';
 function Header() {
 
     const users = useSelector(state => state.users);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getAllUsers());
-    }, [dispatch])
 
     return (
         <header className="bg-white flex p-2">
