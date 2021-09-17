@@ -2,59 +2,26 @@ import React, { useState, useEffect } from 'react';
 
 import './Modal.css';
 
-//import api from '../services/api';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { getUser } from '../store/fetchActions';
+import { getUserFetch } from '../store/fetchActions';
 
-import { useDispatch, useSelector } from 'react-redux';
-
-function Modal({ closeModal, userId }) {
-  const [user, setUser] = useState()
+function Modal({ closeModal, id }) {
+  const user = useSelector((state) => state.users)
   const [isFetching, setFetching] = useState(false)
 
-  const response = useSelector((state) => state.users)
-
-  const dispatch = useDispatch();
-
-  /*
-    async function fetchAPI(userId) {
-      setFetching(true)
-      const response = await api.get(`/?results=1&page=1&id=${userId}`)
-      setFetching(false)
-      setUser(response.data.results[0])
-    }
-  */
-
-  function handleClose() {
-    setUser(undefined)
-    closeModal()
-  }
-  /*
-  
-    useEffect(() => {
-      if (userId) {
-        fetchAPI(userId)
-      }
-    }, [userId])
-  */
-
-
-  async function fetchAPI(userId) {
-    setFetching(true)
-    await dispatch(getUser(userId));
-    setFetching(false)
-    if (response.data && response.results) {
-      setUser(response.data.results[0])
-    }
-  }
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    if (userId) {
-      fetchAPI(userId)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+    setFetching(true)
+    dispatch(getUserFetch(id))
+    setFetching(false)
+  }, [id, dispatch, user.data?.results])
 
+  const userSimpleDetail = user.map((user) => user)
+  const userDetail = userSimpleDetail.find((user) => user.id === id)
+
+  if (!userDetail) return null
 
   if (isFetching) {
     return (
@@ -71,7 +38,7 @@ function Modal({ closeModal, userId }) {
       </div>
     )
   }
-  if (!userId) return null
+  if (!id) return null
   if (!user) return null
 
   return (
@@ -80,48 +47,48 @@ function Modal({ closeModal, userId }) {
         <div className="w-1/3 mb-16, h-full bg-white rounded card">
           <div>
             <div className="flex justify-center relative">
-              <div className="bg-gray-200 w-20 h-20 rounded-full mt-4 absolute" style={{ top: -50 }}>
-                <img src={user.picture.thumbnail} alt="" height={80} width={80} className="rounded-full" />
+              <div className="bg-gray-200 w-20 h-20 rounded-full mt-4 absolute picture" style={{ top: -50 }}>
+                <img src={userDetail.picture.thumbnail} alt="" height={80} width={80} className="rounded-full" />
               </div>
-              <i onClick={handleClose} className="fas fa-times absolute right-1 top-1 cursor-pointer p-2 text-gray-600" width="30px" height="30px" />
+              <i onClick={closeModal} className="fas fa-times absolute right-1 top-1 cursor-pointer p-2 text-gray-600" width="30px" height="30px" />
             </div>
             <div className="p-8 mt-8">
               <div className="flex p-2">
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Name</p>
-                <strong>{user.name.first} {user.name.last}</strong>
+              <div className="flex-column p-2 item">
+                <strong className="text-gray-600">Name</strong>
+                <p>{userDetail.name.first} {userDetail.name.last}</p>
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Email</p>
-                <strong>{user.email}</strong>
+              <div className="flex-column p-2 item">
+                <strong className="text-gray-600">Email</strong>
+                <p>{userDetail.email}</p>
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Gender</p>
-                <strong>{user.gender}</strong>
+              <div className="flex-column p-2 item">
+                <strong className="text-gray-600">Gender</strong>
+                <p>{userDetail.gender}</p>
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Date</p>
-                <strong>{(new Date(user.dob.date)).toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</strong>
+              <div className="flex-column p-2 item">
+                <strong className="text-gray-600">Date</strong>
+                <p>{(new Date(userDetail.dob.date)).toLocaleString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Address</p>
-                <strong>
-                  City: {user.location.city} <br />
-                  Country: {user.location.country} <br />
-                  State: {user.location.state} <br />
-                  Street: {user.location.street.name} <br />
-                  Number: {user.location.street.number} <br />
-                  Postcode: {user.location.postcode} <br />
-                  Description: {user.location.timezone.description} <br />
-                </strong>
+
+              <div className="flex p-2 item">
+                <strong className="text-gray-600 pr-4">Address:</strong>
+                <p className="pr-4">{userDetail.location.city},</p>
+                <p className="pr-4">{userDetail.location.country},</p>
+                <p  className="pr-4">{userDetail.location.state},</p>
+                <p  className="pr-4">{userDetail.location.street.name},</p>
+                <p  className="pr-4">{userDetail.location.street.number},</p>
+                <p  className="pr-4">{userDetail.location.postcode},</p>
+                <p  className="pr-4">{userDetail.location.timezone.description},</p>
               </div>
-              <div className="flex-column p-2">
-                <p className="text-gray-600">Phone</p>
-                <strong>{user.cell}</strong>
+              <div className="flex-column p-2 item">
+                <strong className="text-gray-600">Phone</strong>
+                <p>{userDetail.cell}</p>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

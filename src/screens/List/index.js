@@ -7,62 +7,32 @@ import SearchInput from '../../components/SearchInput';
 
 import Pagination from '../../components/Pagination';
 
+import { useSelector, useDispatch } from 'react-redux';
+
 import { getAllUsers } from '../../store/fetchActions';
-import { useDispatch, useSelector } from 'react-redux';
 
 import './styles.css';
-
-//import api from '../../services/api';
 
 const LIMIT = 12;
 
 function List() {
   const [isFetching, setFetching] = useState(false)
   const [openUserId, setOpenUser] = useState();
-  const response = useSelector((state) => state.users);
+  const users = useSelector((state) => state.users);
+
+  const dispatch = useDispatch();
 
   const [text, setText] = useState('');
   const [offset, setOffset] = useState(0);
-  const [patients, setPatients] = useState([])
-  
-  const dispatch = useDispatch();
 
-  /*
-  
-  async function fetchAPI(query) {
+  useEffect(() => {
+    const query = { nat: 'us', inc: 'id,name,gender,dob', results: LIMIT, offset }
+
     setFetching(true)
-    const response = await api.get('', { params: query })
+    dispatch(getAllUsers(), { params: query })
     setFetching(false)
 
-    if (response.data && response.data.results) {
-      setPatients(response.data.results)
-    }
-  }
-
-  useEffect(() => {
-    const query = { nat: 'br', inc: 'id,name,gender,dob', results: LIMIT, offset }
-    fetchAPI(query)
-  }, [offset])
-  */
-
-  async function fetchAPI() {
-    setFetching(true)
-    await dispatch(getAllUsers())
-    setFetching(false);
-
-    if(response.data && response.data.results) {
-      setPatients(response.data.results)
-    }
-  }
-
-  useEffect(() => {
-    const query = { nat: 'br', inc: 'id,name,gender,dob', results: LIMIT, offset }
-    fetchAPI(query)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset])
-
-
-
+  }, [dispatch, offset])
   return (
     <>
       <Header />
@@ -118,8 +88,8 @@ function List() {
                 :
                 <>
                   {
-                    response
-                      .filter(item => !text || `${item.name.first} ${item.name.last}`
+                    users
+                      .filter(item => !text || `${item.name?.first} ${item.name?.last}`
                         .includes(text)).map((item, i) => {
                           return (
                             <ul className="flex list-row" key={i}>
@@ -152,7 +122,6 @@ function List() {
                                 </span>
 
                               </li>
-
                             </ul>
                           )
                         })
@@ -160,20 +129,21 @@ function List() {
                 </>
             }
           </div>
+  
         </div>
       </div>
 
       {
-        patients && (
+        users && (
           <Pagination
             limit={LIMIT}
-            total={patients.length}
+            total={users}
             offset={offset}
             setOffset={setOffset}
           />
         )
       }
-        <Modal closeModal={() => setOpenUser(undefined)} userId={openUserId} />
+      <Modal closeModal={() => setOpenUser(undefined)} id={openUserId} />
     </>
   )
 }

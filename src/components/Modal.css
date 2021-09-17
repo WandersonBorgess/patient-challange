@@ -6,31 +6,52 @@
     right: 0;
     bottom: 0;
 }
+.app .card {
+    width: 725px;
+    height: 600px;
+}
 
-@media (max-width: 1440px) {
+.app .card .item {
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.app .card .item p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+@media (max-width: 1920px) {
     .app .card {
-        width: 45%;
+        height: 680px;
     }
 }
 
-@media (max-width: 1024px) {
-    .app .card {
-        width: 55%;
-    }
-}
+
 
 @media (max-width: 768px) {
     .app .card {
-        width: 70%;
+        width: 100%;
     }
 }
 
 @media (max-width: 576px) {
     .app .card {
         width: 100%;
+        height: 100%;
     }
 
     .app .modal {
-        padding: 48px 8px 0 8px;
+        padding: 24px;
+    }
+
+    .app .modal .card {
+        overflow: auto;
+    }
+
+    .app .modal .picture {
+        top: -15px!important;
     }
 }

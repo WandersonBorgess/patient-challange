@@ -1,24 +1,21 @@
 import api from '../../services/api';
-import { loadUsers, loadUser } from '../user/reducer';
+import { Users, User } from '../users';
 
 export const getAllUsers = () => {
-  return (dispatch) => {
-    api
-      .get(`/?results=${50}`)
-      .then((res) => {
-        dispatch(loadUsers(res.data.results))
+  return dispatch => {
+    api.get('?results=50')
+      .then(res => {
+        dispatch(Users(res.data.results))
       })
-      .catch(console.log)
+      .catch((error) => "error get users" + error)
   }
 }
 
-export const getUser = (userId) => {
-  return (dispatch) => {
+export const getUserFetch = (id) => {
+  return dispatch => {
     api
-      .get(`/?results=1&page=1&id=${userId}`)
-      .then((res) => {
-        dispatch(loadUser(res.data.results))
-      })
-      .catch(console.log)
+    .get(`/?results=1&page=1&id=${id}`) 
+    .then(res => dispatch(User(res.data.results)))
+    .catch((error) => "error get user" + error)
   }
 }
