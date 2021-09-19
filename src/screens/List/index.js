@@ -35,7 +35,9 @@ function List() {
   }, [dispatch, offset])
   return (
     <>
-      <Header />
+      <Header 
+      title="Company"
+      />
       <div className="flex justify-center align-center">
         <div className="justify-center align-center w-3/6 p-16 data-container">
           <strong className="text-gray-600 flex align-center justify-center">

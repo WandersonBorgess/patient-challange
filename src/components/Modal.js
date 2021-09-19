@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getUserFetch } from '../store/fetchActions';
 
 function Modal({ closeModal, id }) {
-  const user = useSelector((state) => state.users)
   const [isFetching, setFetching] = useState(false)
+  const user = useSelector((state) => state.users)
 
   const dispatch = useDispatch()
 
@@ -16,10 +16,10 @@ function Modal({ closeModal, id }) {
     setFetching(true)
     dispatch(getUserFetch(id))
     setFetching(false)
-  }, [id, dispatch, user.data?.results])
+  }, [id, dispatch, user?.results])
 
   const userSimpleDetail = user.map((user) => user)
-  const userDetail = userSimpleDetail.find((user) => user.id === id)
+  const userDetail = userSimpleDetail?.find((user) => user.id === id)
 
   if (!userDetail) return null
 
@@ -68,7 +68,7 @@ function Modal({ closeModal, id }) {
                 <p>{userDetail.gender}</p>
               </div>
               <div className="flex-column p-2 item">
-                <strong className="text-gray-600">Date</strong>
+                <strong className="text-gray-600">Birth date</strong>
                 <p>{(new Date(userDetail.dob.date)).toLocaleString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
               </div>
 
@@ -88,7 +88,6 @@ function Modal({ closeModal, id }) {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
