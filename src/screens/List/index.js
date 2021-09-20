@@ -13,6 +13,8 @@ import { getAllUsers } from '../../store/fetchActions';
 
 import './styles.css';
 
+import PatientData from './components/PatientData';
+
 const LIMIT = 12;
 
 function List() {
@@ -36,8 +38,8 @@ function List() {
   }, [dispatch, offset])
   return (
     <>
-      <Header 
-      title="Company"
+      <Header
+        title="Company"
       />
       <div className="flex justify-center align-center">
         <div className="justify-center align-center w-3/6 p-16 data-container">
@@ -95,44 +97,21 @@ function List() {
                       .filter(item => !text || `${item.name?.first} ${item.name?.last}`
                         .includes(text)).map((item, i) => {
                           return (
-                            <ul className="flex list-row" key={i}>
-                              <li
-                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                              >
-                                <div>
-                                  <strong className="text-gray-600">{item.name?.first}</strong>
-                                  <strong className="text-gray-600 pl-2">{item.name?.last}</strong>
-                                </div>
-                              </li>
-                              <li
-                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                              >
-                                <p className="text-gray-600">{item.gender === 'male' ? 'Male' : 'Female'}</p>
-                              </li>
-                              <li
-                                className="border-r-2 border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                              >
-                                <p className="text-gray-600">{(new Date(item.dob?.date)).toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                              </li>
-                              <li
-                                className="border-gray-600 p-2 w-1/4 bg-white-100 flex align-center justify-center"
-                              >
-                                <span
-                                  className="bg-gray-600 cursor-pointer text-center rounded p-2 w-1/2"
-                                  onClick={() => setOpenUser(item.id)}
-                                >
-                                  <strong className="text-white">View</strong>
-                                </span>
-
-                              </li>
-                            </ul>
+                            <PatientData
+                            key={i}
+                              firstName={item.name.first}
+                              lastName={item.name.last}
+                              gender={item.gender}
+                              date={item.dob.date}
+                              onClick={() => setOpenUser(item.id)}
+                            />
                           )
                         })
                   }
                 </>
             }
           </div>
-  
+
         </div>
       </div>
 
@@ -146,17 +125,17 @@ function List() {
           />
         )
       }
-      <Modal 
-      closeModal={() => setOpenUser(undefined)} 
-      id={openUserId}
-      thumbnail={user?.picture.thumbnail}
-      gender={user?.gender}
-      address={user?.location.street.name}
-      date={user?.dob.date}
-      fistName={user?.name.first}
-      lastName={user?.name.last}
-      phone={user?.phone}
-      email={user?.email}
+      <Modal
+        closeModal={() => setOpenUser(undefined)}
+        id={openUserId}
+        thumbnail={user?.picture.thumbnail}
+        gender={user?.gender}
+        address={user?.location.street.name}
+        date={user?.dob.date}
+        fistName={user?.name.first}
+        lastName={user?.name.last}
+        phone={user?.phone}
+        email={user?.email}
       />
     </>
   )
