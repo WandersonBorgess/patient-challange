@@ -19,6 +19,7 @@ function List() {
   const [isFetching, setFetching] = useState(false)
   const [openUserId, setOpenUser] = useState();
   const users = useSelector((state) => state.users);
+  const user = useSelector((state) => state.users.find((user) => user.id === openUserId))
 
   const dispatch = useDispatch();
 
@@ -145,7 +146,18 @@ function List() {
           />
         )
       }
-      <Modal closeModal={() => setOpenUser(undefined)} id={openUserId} />
+      <Modal 
+      closeModal={() => setOpenUser(undefined)} 
+      id={openUserId}
+      thumbnail={user?.picture.thumbnail}
+      gender={user?.gender}
+      address={user?.location.street.name}
+      date={user?.dob.date}
+      fistName={user?.name.first}
+      lastName={user?.name.last}
+      phone={user?.phone}
+      email={user?.email}
+      />
     </>
   )
 }
