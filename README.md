@@ -4,6 +4,9 @@ Patient List Project.
 #How start the project
 to run the project just give a yarn start or npm start.
 
+#How test the project
+to test the project just give a yarn test.
+
 #LINK Project
 https://lab.coodesh.com/public-challenges/front-end-challenge-2021
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import * as redux from "react-redux";
 import pretty from "pretty";
 import PatientData from "../screens/List/components/PatientData";
 
