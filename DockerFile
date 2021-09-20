@@ -1,0 +1,12 @@
+FROM node:12.16.1
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy Files
+COPY . .
+
+# Install dependences
+RUN yarn install
+
+ENTRYPOINT ["yarn", "start"]

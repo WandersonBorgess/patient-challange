@@ -1,14 +1,18 @@
-#Project Title
-Patient List Project.
+#Iniciar projeto
+yarn start ou npm start.
 
-#How start the project
-to run the project just give a yarn start or npm start.
+#Testar projeto
+yarn test
 
-#How test the project
-to test the project just give a yarn test.
+#Exibe os containers
+docker ps -a
 
-#LINK Project
-https://lab.coodesh.com/public-challenges/front-end-challenge-2021
+#Pausa, Parar, Reiniciar, Iniciar: container
+docker pause node-app
+docker unpause node-app
+docker start node-app
+docker restart node-app
+docker stop node-app
 
-#Description
-patient listing project within the project has a list of all patients and has the possibility to search by patient and visualize.
+#Compilar container
+docker-compose up -d --build
